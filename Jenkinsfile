@@ -17,7 +17,7 @@ pipeline {
 
             post {
                 always {
-                    junit '**/target/surefire-reports/TEST-tn.esprit.rh.achat.ProduitTest.xml'
+                    junit '**/target/surefire-reports/TEST-*.xml'
                 }
             }
         }
