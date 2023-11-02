@@ -2,11 +2,10 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+         stage('Checkout') {
             steps {
-                git 'https://github.com/azizaz1/devops1.git'
-                sh './mvnw clean compile'
-                 bat '.\\mvnw clean compile'
+                // Checkout code from version control (Git)
+                git branch: 'main', url: 'https://github.com/azizaz1/devops1.git'
             }
         }
         stage('Test') {
