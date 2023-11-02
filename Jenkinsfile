@@ -2,22 +2,32 @@ pipeline {
     agent any
 
     stages {
-         stage('Checkout') {
+        stage('Checkout') {
             steps {
                 // Checkout code from version control (Git)
                 git branch: 'main', url: 'https://github.com/azizaz1/devops1.git'
             }
         }
+
+        stage('Build') {
+            steps {
+                // Build the project using Maven or Gradle
+                sh 'mvn clean package' // For Maven
+                // Or: sh './gradlew build' // For Gradle
+            }
+        }
+
         stage('Test') {
             steps {
-                sh './mvnw test'
-                 bat '.\\mvnw test'
+                // Run JUnit tests using Maven or Gradle
+                sh 'mvn test' // For Maven
+                // Or: sh './gradlew test' // For Gradle
             }
+        }
 
-            post {
-                always {
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                }
+        stage('Deploy') {
+            steps {
+               junit '**/target/surefire-reports/TEST-*.xml'
             }
         }
     }
