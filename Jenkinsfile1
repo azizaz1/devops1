@@ -1,18 +1,17 @@
 pipeline {
-  agent any
-  options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
-  }
- stages {
+    agent any
+    
+    stages {
         stage('Checkout') {
             steps {
                 // Checkout source code from your repository
                 // Use the appropriate SCM configuration for your repository
                 // For example, for Git:
-                git branch: 'testProduit',url: 'https://github.com/azizaz1/devops1.git
+                git branch: 'testProduit', credentialsId: 'your-credentials', url: 'https://github.com/azizaz1/devops1.git'
             }
         }
-stage('Build') {
+
+        stage('Build') {
             steps {
                 // Build your project
                 sh 'mvn clean package'
@@ -25,14 +24,14 @@ stage('Build') {
                 sh 'mvn test'
             }
         }
-  stages{
-    stage('Scan'){
-      steps{
-        withSonarQubeEnv(installationName: 'sq1'){
-           sh 'mvn sonar:sonar'
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv(installationName: 'sq1'){
+                    // Run SonarQube analysis using the SonarQube Scanner
+                    sh 'mvn sonar:sonar'
+                }
+            }
         }
-      }
     }
-  }
 }
-          
