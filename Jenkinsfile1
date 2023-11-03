@@ -3,6 +3,15 @@ pipeline {
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
+ stages {
+        stage('Checkout') {
+            steps {
+                // Checkout source code from your repository
+                // Use the appropriate SCM configuration for your repository
+                // For example, for Git:
+                git branch: 'testProduit',url: 'https://github.com/azizaz1/devops1.git
+            }
+        }
 stage('Build') {
             steps {
                 // Build your project
