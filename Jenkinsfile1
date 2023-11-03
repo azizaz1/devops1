@@ -7,7 +7,7 @@ pipeline {
     stage('Scan'){
       steps{
         withSonarQubeEnv(installationName: 'sq1'){
-          sh 'chmod +x mvnw ./mvnw clean sonar:sonar'
+          sh 'mvnw ./mvnw clean sonar:sonar'
         }
       }
     }
