@@ -3,6 +3,19 @@ pipeline {
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
+stage('Build') {
+            steps {
+                // Build your project
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Run your tests
+                sh 'mvn test'
+            }
+        }
   stages{
     stage('Scan'){
       steps{
