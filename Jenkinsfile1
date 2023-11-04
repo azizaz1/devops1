@@ -1,50 +1,46 @@
 pipeline {
     agent any
-
+    
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from version control (Git)
-                git branch: 'testProduit', url: 'https://github.com/azizaz1/devops1.git'
+                // Checkout source code from your repository
+                // Use the appropriate SCM configuration for your repository
+                // For example, for Git:
+                git branch: 'testProduit', credentialsId: 'your-credentials', url: 'https://github.com/azizaz1/devops1.git'
             }
         }
 
         stage('Build') {
             steps {
-                // Build the project using Maven
-                sh 'mvn clean package' // Replace with your Maven build command
+                // Build your project
+                sh 'mvn clean package'
             }
         }
 
         stage('Test') {
             steps {
-                // Run JUnit tests using Maven
-                sh 'mvn test' // Command to run JUnit tests
+                // Run your tests
+                sh 'mvn test'
             }
         }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv(installationName: 'sq1'){
+                    // Run SonarQube analysis using the SonarQube Scanner
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
+        
 
         stage('Publish Test Results') {
             steps {
                 // Publish JUnit test results in Jenkins
                 junit '**/target/surefire-reports/TEST-*.xml'
             }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                // Defining the SonarQube Scanner step
-               mvn clean verify sonar:sonar \
-  -Dsonar.projectKey=devops1 \
-  -Dsonar.projectName='devops1' \
-  -Dsonar.host.url=http://192.168.33.10:9000 \
-  -Dsonar.token=sqp_17388a9e6d5de1fb92aba943d4a76ac7ee61e6d1
-            }
-        
     }
 }
-<distributionManagement>
-<repository>
-<id>deploymentRepo</id>
-<name>Nexus Repository</name>
-<url>http://localhost:8081/repository/maven-releases/</url>
-</repository>
-</distributionManagement>
+    
+}
