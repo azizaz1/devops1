@@ -75,6 +75,7 @@ stage('Publish to Nexus') {
         stage('Deploy') {
             steps {
                 // Your deployment steps here, e.g., deploying to servers
+sh 'mvn deploy'
             }
         }
 }
