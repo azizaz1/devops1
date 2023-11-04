@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout source code from your repository
+                // Use the appropriate SCM configuration for your repository
+                // For example, for Git:
+                git branch: 'testProduit', credentialsId: 'your-credentials', url: 'https://github.com/azizaz1/devops1.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Build your project
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Run your tests
+                sh 'mvn test'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv(installationName: 'sq1'){
+                    // Run SonarQube analysis using the SonarQube Scanner
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
+    }
+}
