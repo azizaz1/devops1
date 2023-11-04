@@ -44,19 +44,19 @@ stage("Publish to Nexus Repository Manager") {
                     if(artifactExists) {
                         echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
                         nexusArtifactUploader(
-                            nexusVersion: 'nexus3.61.0-02',
+                            nexusVersion: 'nexus3',
                             protocol: 'http',
                             nexusUrl: '192.168.33.10:8081',
-                            groupId: 'pom.org.springframework.boot',
-                            version: 'pom.2.5.3',
+                            groupId: 'pom.tn.esprit.rh',
+                            version: 'pom.1.0',
                             repository: 'maven-central-repository',
                             credentialsId: 'NEXUS_CRED',
                             artifacts: [
-                                [artifactId: 'pom.spring-boot-starter-parent',
+                                [artifactId: 'pom.achat',
                                 classifier: '',
                                 file: artifactPath,
                                 type: pom.packaging],
-                                [artifactId: 'pom.spring-boot-starter-parent',
+                                [artifactId: 'pom.achat',
                                 classifier: '',
                                 file: "pom.xml",
                                 type: "pom"]
