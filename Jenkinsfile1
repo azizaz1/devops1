@@ -41,43 +41,19 @@ pipeline {
                 junit '**/target/surefire-reports/TEST-*.xml'
             }
     }
- stage('Publish to Nexus') {
+ stage('Build and Deploy') {
             steps {
                 script {
-                    def pom = readMavenPom()
-                    def nexusUrl = pom.distributionManagement.repository.url
-                    
-                    if (nexusUrl) {
-                        def nexusCred = 'NEXUS_CRED' // Credentials ID in Jenkins
-                        def artifactPath = "target/${pom.artifactId}-${pom.version}.${pom.packaging}"
+                    def nexusCred = credentials('deploymentRepo') // Retrieve Nexus credentials
 
-                        if (fileExists(artifactPath)) {
-                            nexusArtifactUploader(
-                                nexusVersion: 'nexus3', // Nexus version
-                                protocol: 'http', // Protocol used (http/https)
-                                nexusUrl: 'http://192.168.33.10:8081',
-                                credentialsId: 'NEXUS_CRED',
-                                groupId: 'pom.tn.esprit.rh',
-                                version: 'pom.1.0',
-                                repository: 'maven-releases', // Nexus repository name
-                                artifacts: [
-                                    [artifactId: 'achat.artifactId',
-                                    classifier: '',
-                                    file: artifactPath,
-                                    type: pom.packaging]
-                                ]
-                            )
-                        } else {
-                            error "Artifact not found at path: ${artifactPath}"
-                        }
-                    } else {
-                        error "Nexus repository URL not found in pom.xml"
-                    }
+                    // Maven build and deployment using settings from pom.xml and settings.xml
+                    sh 'mvn clean deploy --settings /path/to/settings.xml'
                 }
+            }
+        }
+
             }
         }
         
        
-}
 
-}
