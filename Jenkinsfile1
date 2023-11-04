@@ -1,65 +1,50 @@
 pipeline {
     agent any
-       
-    tools {
-        maven "Maven"
-    }
-    environment {
-        NEXUS_VERSION = "nexus3"
-        NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "192.168.33.10:8081"
-        NEXUS_REPOSITORY = "maven-central-repository"
-        NEXUS_CREDENTIAL_ID = "NEXUS_CRED"
-    }
+
     stages {
-        stage("Clone code from VCS") {
+        stage('Checkout') {
             steps {
-                script {
-                    git branch: 'testProduit', url: 'https://github.com/azizaz1/devops1.git';
-                }
+                // Checkout code from version control (Git)
+                git branch: 'testProduit', url: 'https://github.com/azizaz1/devops1.git'
             }
         }
-        stage("Maven Build") {
+
+        stage('Build') {
             steps {
-                script {
-                    sh "mvn package -DskipTests=true"
-                }
+                // Build the project using Maven
+                sh 'mvn clean package' // Replace with your Maven build command
             }
         }
-        stage("Publish to Nexus Repository Manager") {
+
+        stage('Test') {
             steps {
-                script {
-                    pom = readMavenPom file: "pom.xml";
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    artifactPath = filesByGlob[0].path;
-                    artifactExists = fileExists artifactPath;
-                    if(artifactExists) {
-                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
-                        nexusArtifactUploader(
-                            nexusVersion: NEXUS_VERSION,
-                            protocol: NEXUS_PROTOCOL,
-                            nexusUrl: NEXUS_URL,
-                            groupId: pom.tn.esprit.rh,
-                            version: pom.1.0,
-                            repository: NEXUS_REPOSITORY,
-                            credentialsId: NEXUS_CREDENTIAL_ID,
-                            artifacts: [
-                                [artifactId: pom.achat,
-                                classifier: '',
-                                file: artifactPath,
-                                type: pom.packaging],
-                                [artifactId: pom.achat,
-                                classifier: '',
-                                file: "pom.xml",
-                                type: "pom"]
-                            ]
-                        );
-                    } else {
-                        error "*** File: ${artifactPath}, could not be found";
-                    }
-                }
+                // Run JUnit tests using Maven
+                sh 'mvn test' // Command to run JUnit tests
             }
         }
+
+        stage('Publish Test Results') {
+            steps {
+                // Publish JUnit test results in Jenkins
+                junit '**/target/surefire-reports/TEST-*.xml'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                // Defining the SonarQube Scanner step
+               mvn clean verify sonar:sonar \
+  -Dsonar.projectKey=devops1 \
+  -Dsonar.projectName='devops1' \
+  -Dsonar.host.url=http://192.168.33.10:9000 \
+  -Dsonar.token=sqp_17388a9e6d5de1fb92aba943d4a76ac7ee61e6d1
+            }
+        
     }
 }
+<distributionManagement>
+<repository>
+<id>deploymentRepo</id>
+<name>Nexus Repository</name>
+<url>http://localhost:8081/repository/maven-releases/</url>
+</repository>
+</distributionManagement>
