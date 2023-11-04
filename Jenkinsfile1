@@ -17,22 +17,6 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-
-        stage('Test') {
-            steps {
-                // Run your tests
-                sh 'mvn test'
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv(installationName: 'sq1'){
-                    // Run SonarQube analysis using the SonarQube Scanner
-                    sh 'mvn sonar:sonar'
-                }
-            }
-        }
 stage("Publish to Nexus Repository Manager") {
             steps {
                 script {
@@ -68,5 +52,21 @@ stage("Publish to Nexus Repository Manager") {
                 }
             }
         }
+        stage('Test') {
+            steps {
+                // Run your tests
+                sh 'mvn test'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv(installationName: 'sq1'){
+                    // Run SonarQube analysis using the SonarQube Scanner
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
+
     }
 }
