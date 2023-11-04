@@ -41,7 +41,7 @@ pipeline {
                 junit '**/target/surefire-reports/TEST-*.xml'
             }
     }
- stage('NEXUS') {
+ stage('Build and Deploy') {
             steps {
                 script {
                     def nexusCred = credentials('deploymentRepo') // Retrieve Nexus credentials
