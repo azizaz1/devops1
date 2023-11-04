@@ -24,11 +24,20 @@ pipeline {
                 sh 'mvn test'
             }
         }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv(installationName: 'sq1'){
+                    // Run SonarQube analysis using the SonarQube Scanner
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
 stage("Publish to Nexus Repository Manager") {
             steps {
                 script {
                     pom = readMavenPom file: "pom.xml";
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                    filesByGlob = findFiles(glob: "target/achat-1.0.war");
                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
                     artifactPath = filesByGlob[0].path;
                     artifactExists = fileExists artifactPath;
@@ -56,14 +65,6 @@ stage("Publish to Nexus Repository Manager") {
                     } else {
                         error "*** File: ${artifactPath}, could not be found";
                     }
-                }
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv(installationName: 'sq1'){
-                    // Run SonarQube analysis using the SonarQube Scanner
-                    sh 'mvn sonar:sonar'
                 }
             }
         }
