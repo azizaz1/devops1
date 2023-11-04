@@ -45,8 +45,8 @@ stage("Publish to Nexus Repository Manager") {
                         echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
                         nexusArtifactUploader(
                             nexusVersion: 'nexus3',
-                            protocol: 'http',
-                            nexusUrl: '192.168.33.10:8081',
+                            protocol: '',
+                            nexusUrl: 'http://192.168.33.10:8081/',
                             groupId: 'pom.org.springframework.boot',
                             version: 'pom.2.5.3',
                             repository: 'maven-central-repository',
