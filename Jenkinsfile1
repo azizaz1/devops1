@@ -47,7 +47,7 @@ pipeline {
                     def nexusCred = credentials('deploymentRepo') // Retrieve Nexus credentials
 
                     // Maven build and deployment using settings from pom.xml and settings.xml
-                    sh 'mvn clean deploy --settings /path/to/settings.xml'
+                    sh 'mvn clean deploy --settings /usr/share/maven/conf/settings.xml'
                 }
             }
         }
