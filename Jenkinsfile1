@@ -45,7 +45,7 @@ stage('Publish to Nexus') {
             steps {
                 script {
                     def nexusUrl = 'http://192.168.33.10:8081/repository/maven-releases/' // Nexus repository URL
-                    def nexusCred = 'NEXUS_CRED' // Credentials ID in Jenkins
+                     // Credentials ID in Jenkins
                     def pom = readMavenPom()
                     def artifactPath = "target/${pom.artifactId}-${pom.version}.${pom.packaging}"
 
@@ -54,7 +54,7 @@ stage('Publish to Nexus') {
                             nexusVersion: 'nexus3', // Nexus version
                             protocol: 'http', // Protocol used (http/https)
                             nexusUrl: '192.168.33.10:8081',
-                            credentialsId: 'NEXUS_CRED',
+                            
                             groupId: 'pom.tn.esprit.rh',
                             version: 'pom.1.0',
                             repository: 'maven-releases', // Nexus repository name
