@@ -32,7 +32,7 @@ services:
 
   back-app:
 
-    image: mohamedbayoudh/achat
+    image: azizazaiez1/achat
 
     container_name: spring-back-project
 
