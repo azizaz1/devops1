@@ -1,12 +1,17 @@
-# Docker Build Maven Stage
-FROM maven:3-jdk-8-alpine AS build
-# Copy folder in docker
-WORKDIR /opt/app
-COPY ./ /opt/app
-RUN mvn clean install -DskipTests
-# Run spring boot in Docker
-FROM openjdk:8-jdk-alpine
-COPY --from=build /opt/app/target/*.jar app.jar
-ENV PORT 8080
-EXPOSE $PORT
-ENTRYPOINT ["java","-jar","-Xmx1024M","-Dserver.port=${PORT}","app.jar"]
+FROM openjdk:11-jre-slim
+
+WORKDIR /app
+
+EXPOSE 8082
+
+
+RUN apt-get update && apt-get install -y \
+  curl \
+  ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV JAR_URL=http://192.168.43.223:8081/repository/maven-central-repository/tn/esprit/rh/achat/1.0/achat-1.0.jar
+
+RUN curl -o achat-1.0.jar ${JAR_URL}
+
+ENTRYPOINT ["java", "-jar", "achat-1.0.jar"]
